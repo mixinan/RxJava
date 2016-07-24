@@ -1,159 +1,74 @@
 package cc.guoxingnan.rxjavatest;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action1;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cc.guoxingnan.rxjavatest.fragment.FragmentOne;
+import cc.guoxingnan.rxjavatest.fragment.FragmentThree;
+import cc.guoxingnan.rxjavatest.fragment.FragmentTwo;
 
 public class MainActivity extends AppCompatActivity {
-    private String TAG = "MainActivity";
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R.id.viewpager)
+    ViewPager viewpager;
+    private List<Fragment> fragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        initData();
 
-//        first();
-
-//        second();
-
-//        third();
-
-//        forth();
-
-//        fifth();
-
-//        sixth();
-
-//        seventh();
-
-        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+        viewpager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
-                Log.i(TAG, "被调用：" + Thread.currentThread().getName());
-                subscriber.onNext("被调用了！");
+            public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragments.size();
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return "图片";
+                    case 1:
+                        return "Android";
+                    case 2:
+                        return "ios";
+                    default:
+                        return "图片";
+                }
             }
         });
 
-        Action1<String> action = new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Log.i(TAG, "call: " + Thread.currentThread().getName());
-            }
-        };
-
-        observable.subscribe(action);
-
-
-
+        tabLayout.setupWithViewPager(viewpager);
     }
 
-
-    private void seventh() {
-        Observable.just(0, 1).repeat(5).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                Log.i(TAG, "call: " + integer);
-            }
-        });
+    private void initData() {
+        fragments = new ArrayList<>();
+        fragments.add(new FragmentOne());
+        fragments.add(new FragmentTwo());
+        fragments.add(new FragmentThree());
     }
 
-
-    private void sixth() {
-        Observable.range(0, 12).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                Log.i(TAG, "call: " + integer);
-            }
-        });
-    }
-
-
-    private void fifth() {
-        Observable.just(0, 1, 2).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                Log.i(TAG, "call: " + integer);
-            }
-        });
-    }
-
-
-    private void forth() {
-        Observable<String> observable = Observable.just("forth");
-        observable.subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Log.i(TAG, "call: " + s);
-            }
-        });
-    }
-
-
-    private void third() {
-        Observable<String> observable = Observable.just("third");
-        Action1<String> action1 = new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Log.i(TAG, "call: " + s);
-            }
-        };
-
-        observable.subscribe(action1);
-    }
-
-
-    private void second() {
-        Observable<String> observable = Observable.just("嘿嘿");
-        Subscriber<String> subscriber = new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                Log.i(TAG, "-----------onCompleted");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-                Log.i(TAG, "onNext: " + s);
-            }
-        };
-
-        observable.subscribe(subscriber);
-    }
-
-
-    private void first() {
-        Subscriber<String> subscriber = new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-                Log.i(TAG, "onNext: " + s);
-            }
-        };
-
-        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                subscriber.onNext("heihei");
-            }
-        });
-
-        observable.subscribe(subscriber);
-    }
 }
