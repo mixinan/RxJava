@@ -7,11 +7,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +39,10 @@ public class FragmentApp extends BaseFragment implements AdapterView.OnItemClick
 
     @BindView(R.id.lv_app)
     ListView lvApp;
+    @BindView(R.id.appListLayout)
+    FrameLayout layout;
+
+    private ProgressBar progressBar;
 
     private AppAdapter adapter;
     private List<AppInfo> data;
@@ -45,13 +52,14 @@ public class FragmentApp extends BaseFragment implements AdapterView.OnItemClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_4, container, false);
         ButterKnife.bind(this, view);
-
+        showProgress();
         getData();
         lvApp.setOnItemClickListener(this);
         return view;
     }
 
     private void getData() {
+        unSubscribe();
         subscription = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<AppInfo>>() {
@@ -60,6 +68,7 @@ public class FragmentApp extends BaseFragment implements AdapterView.OnItemClick
                         data = appInfos;
                         adapter = new AppAdapter(getActivity(), appInfos);
                         lvApp.setAdapter(adapter);
+                        cancelProgress();
                     }
                 });
     }
@@ -93,7 +102,7 @@ public class FragmentApp extends BaseFragment implements AdapterView.OnItemClick
             File apkFile = new File(packageInfo.applicationInfo.sourceDir);
             appInfo.setFile(apkFile);
 
-            appInfo.setSize(""+((float) apkFile.length() / 1024 / 1024));
+            appInfo.setSize("" + ((float) apkFile.length() / 1024 / 1024));
 
             //如果非系统应用，则添加至data
             if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -119,14 +128,36 @@ public class FragmentApp extends BaseFragment implements AdapterView.OnItemClick
     }
 
 
-
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //分享文件
         File apkFile = data.get(position).getFile();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(apkFile));
         startActivity(intent);
+    }
+
+    /**
+     * 显示进度
+     */
+    private void showProgress() {
+        progressBar = new ProgressBar(getActivity());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER);
+        progressBar.setLayoutParams(params);
+        progressBar.setVisibility(View.VISIBLE);
+        layout.addView(progressBar);
+    }
+
+    /**
+     * 让进度消失
+     */
+    private void cancelProgress() {
+        if (progressBar != null && layout != null) {
+            layout.removeView(progressBar);
+        }
     }
 }

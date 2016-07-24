@@ -51,15 +51,15 @@ public class MainActivity extends AppCompatActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return "图片";
+                        return "美女图片";
                     case 1:
-                        return "Android";
+                        return "Android文章";
                     case 2:
-                        return "ios";
+                        return "ios文章";
                     case 3:
                         return "分享手机中的应用";
                     default:
-                        return "图片";
+                        return "美女图片";
                 }
             }
         });

@@ -34,7 +34,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
     public void onBindViewHolder(ImageAdapter.MyViewHolder holder, int position) {
         Image image = data.get(position);
         Glide.with(holder.itemView.getContext()).load(image.getUrl()).into(holder.iv);
-        holder.tv.setText(image.getCreatedAt());
+        holder.tv.setText(image.getCreatedAt().substring(0, 10));
     }
 
     @Override
