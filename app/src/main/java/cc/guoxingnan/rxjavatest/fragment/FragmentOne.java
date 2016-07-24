@@ -1,7 +1,6 @@
 package cc.guoxingnan.rxjavatest.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,13 +11,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cc.guoxingnan.rxjavatest.BaseFragment;
 import cc.guoxingnan.rxjavatest.R;
 import cc.guoxingnan.rxjavatest.adapter.ImageAdapter;
 import cc.guoxingnan.rxjavatest.entity.Image;
 import cc.guoxingnan.rxjavatest.entity.ImageResult;
 import cc.guoxingnan.rxjavatest.http.HttpUtil;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -26,7 +25,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by mixinan on 2016/7/23.
  */
-public class FragmentOne extends Fragment {
+public class FragmentOne extends BaseFragment {
 
     @BindView(R.id.rvImage)
     RecyclerView rvImage;
@@ -34,13 +33,6 @@ public class FragmentOne extends Fragment {
     private int page;
     private ImageAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private Subscription subscription;
-
-    private void unSubscribe() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-    }
 
     Observer<List<Image>> observer = new Observer<List<Image>>() {
         @Override

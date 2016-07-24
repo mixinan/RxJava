@@ -4,4 +4,13 @@
     android:layout_height="match_parent"
     android:background="#38074507">
 
+    <ListView
+        android:id="@+id/lv_android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false"/>
+
 </LinearLayout>

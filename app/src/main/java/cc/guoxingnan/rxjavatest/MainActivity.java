@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cc.guoxingnan.rxjavatest.fragment.FragmentApp;
 import cc.guoxingnan.rxjavatest.fragment.FragmentOne;
 import cc.guoxingnan.rxjavatest.fragment.FragmentThree;
 import cc.guoxingnan.rxjavatest.fragment.FragmentTwo;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
                         return "Android";
                     case 2:
                         return "ios";
+                    case 3:
+                        return "分享手机中的应用";
                     default:
                         return "图片";
                 }
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(viewpager);
+        viewpager.setOffscreenPageLimit(4);
     }
 
     private void initData() {
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(new FragmentOne());
         fragments.add(new FragmentTwo());
         fragments.add(new FragmentThree());
+        fragments.add(new FragmentApp());
     }
 
 }
